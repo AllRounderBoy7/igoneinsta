@@ -9,42 +9,51 @@ interface DashboardProps {
 export function Dashboard({ onNavigate }: DashboardProps) {
   const { user, automations, contacts, flows, activities } = useStore();
 
-  // 1. Initialize Facebook SDK (Bina bug ke)
+  // Facebook SDK ko load aur setup karne ka auto-logic
   useEffect(() => {
     // @ts-ignore
     window.fbAsyncInit = function() {
       // @ts-ignore
       window.FB.init({
-        appId      : '2436954916718675', // YE TERI SAHI ID HAI
+        appId      : '2436954916718675', // Maine ID fix kar di hai yahan
         cookie     : true,
         xfbml      : true,
         version    : 'v21.0'
       });
     };
+
+    // Script ko body mein add karna taaki SDK chalu ho jaye
+    if (!document.getElementById('facebook-jssdk')) {
+      const script = document.createElement('script');
+      script.id = 'facebook-jssdk';
+      script.src = "https://connect.facebook.net/en_US/sdk.js";
+      script.async = true;
+      script.defer = true;
+      script.crossOrigin = "anonymous";
+      document.body.appendChild(script);
+    }
   }, []);
 
-  // 2. Optimized Connect Function (Manychat Style)
+  // Instagram Connect karne wala function (Manychat style popup)
   const handleConnectInstagram = () => {
     // @ts-ignore
     if (window.FB) {
       // @ts-ignore
-      window.FB.login((response) => {
+      window.FB.login((response: any) => {
         if (response.authResponse) {
-          console.log('✅ Connected! Token:', response.authResponse.accessToken);
-          alert("Instagram Connected Successfully! 🚀");
+          console.log('✅ Token Mil Gaya:', response.authResponse.accessToken);
+          alert("Instagram Connected! Dashboard refresh ho raha hai...");
           window.location.reload(); 
-        } else {
-          console.log('❌ Connection Cancelled');
         }
       }, {
         scope: 'instagram_basic,instagram_manage_comments,instagram_manage_messages,pages_show_list,pages_read_engagement'
       });
     } else {
-      alert("System loading... please wait 2 seconds.");
+      alert("Facebook System load ho raha hai, please 2 second baad click karein.");
     }
   };
 
-  // Instagram not connected view
+  // AGAR INSTAGRAM CONNECTED NAHI HAI TOH YE DIKHEGA
   if (!user?.instagram_connected) {
     return (
       <div className="max-w-2xl mx-auto mt-8">
@@ -68,20 +77,38 @@ export function Dashboard({ onNavigate }: DashboardProps) {
               Connect Instagram Account
               <ExternalLink size={18} />
             </button>
+            <div className="mt-10 grid grid-cols-3 gap-4">
+              {[
+                { icon: '🔒', text: 'Secure OAuth', desc: 'Meta Official API' },
+                { icon: '⚡', text: 'Instant Setup', desc: 'Done in 30 seconds' },
+                { icon: '🔄', text: 'Auto-Sync', desc: 'Real-time data' },
+              ].map((item, i) => (
+                <div key={i} className="text-center p-3 bg-gray-50 rounded-xl">
+                  <div className="text-2xl mb-1">{item.icon}</div>
+                  <div className="text-xs font-bold text-gray-700">{item.text}</div>
+                  <div className="text-[10px] text-gray-400">{item.desc}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-        
-        {/* Guide Section */}
+
         <div className="mt-6 bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
           <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
             <BookOpen size={18} className="text-purple-600" />
-            Quick Setup Steps
+            How to Create Instagram Business Account
           </h3>
           <div className="space-y-3">
-            {['Switch to Professional Account', 'Connect to Facebook Page', 'Allow Access to Messages'].map((step, i) => (
+            {[
+              'Open Instagram app → Go to Profile → Tap ⚙️ Settings',
+              'Tap "Account" → "Switch to Professional Account"',
+              'Choose "Business" or "Creator" account type',
+              'Select a category (any category works)',
+              'Done! ✅ Now you can connect to igone',
+            ].map((step, i) => (
               <div key={i} className="flex items-start gap-3 p-3 bg-purple-50 rounded-xl">
                 <span className="w-6 h-6 rounded-full bg-purple-500 text-white text-xs flex items-center justify-center font-bold flex-shrink-0">{i + 1}</span>
-                <p className="text-sm text-gray-700 font-medium">{step}</p>
+                <p className="text-sm text-gray-700">{step}</p>
               </div>
             ))}
           </div>
@@ -90,7 +117,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
     );
   }
 
-  // Statistics calculation
+  // AGAR CONNECTED HAI TOH YE DASHBOARD DIKHEGA
   const activeAutomations = automations.filter(a => a.is_active).length;
   const messageCount = user?.message_count || 0;
 
@@ -99,40 +126,54 @@ export function Dashboard({ onNavigate }: DashboardProps) {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-black text-gray-900 flex items-center gap-2">
-            👋 Welcome, {user?.name || 'User'}!
+            👋 Welcome back, {user?.name || 'User'}!
           </h1>
-          <p className="text-gray-500 mt-1">System Status: <span className="text-green-600 font-bold">● ACTIVE</span></p>
+          <p className="text-gray-500 mt-1">Here's your Instagram automation overview.</p>
         </div>
-        <button onClick={() => onNavigate('automations')} className="bg-gradient-to-r from-purple-600 to-pink-500 text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg">
-          + New Automation
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => onNavigate('automations')}
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-purple-600 to-pink-500 text-white rounded-xl font-bold text-sm shadow-lg shadow-purple-200 hover:shadow-xl hover:-translate-y-0.5 transition-all active:translate-y-0"
+          >
+            <Zap size={16} />
+            New Automation
+          </button>
+        </div>
       </div>
 
-      {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { title: 'Messages', value: messageCount, icon: Send, color: 'from-blue-500 to-cyan-400' },
-          { title: 'Active Bots', value: activeAutomations, icon: Bot, color: 'from-purple-500 to-pink-500' },
-          { title: 'Contacts', value: contacts.length, icon: Users, color: 'from-green-500 to-emerald-400' },
-          { title: 'Flows', value: flows.length, icon: TrendingUp, color: 'from-orange-500 to-amber-400' },
+          { title: 'Messages Sent', value: messageCount, icon: Send, color: 'from-blue-500 to-cyan-400', emoji: '📨' },
+          { title: 'Active Automations', value: activeAutomations, icon: Bot, color: 'from-purple-500 to-pink-500', emoji: '🤖' },
+          { title: 'Total Contacts', value: contacts.length, icon: Users, color: 'from-green-500 to-emerald-400', emoji: '👥' },
+          { title: 'Active Flows', value: flows.length, icon: TrendingUp, color: 'from-orange-500 to-amber-400', emoji: '📈' },
         ].map((stat, i) => (
           <div key={i} className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm transition-all hover:-translate-y-1">
-            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center mb-4 text-white shadow-md`}>
-              <stat.icon size={20} />
+            <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${stat.color} flex items-center justify-center mb-4 shadow-lg text-white`}>
+              <stat.icon size={22} />
             </div>
-            <p className="text-2xl font-black text-gray-900">{stat.value}</p>
-            <p className="text-sm text-gray-500 uppercase tracking-wider font-bold text-[10px]">{stat.title}</p>
+            <p className="text-2xl font-black text-gray-900">{stat.value.toLocaleString()}</p>
+            <p className="text-sm text-gray-500 mt-0.5 flex items-center gap-1">{stat.emoji} {stat.title}</p>
           </div>
         ))}
       </div>
 
-      {/* Quick Actions */}
       <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
         <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2"><Sparkles size={18} className="text-purple-600" /> Quick Actions</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {['automations', 'contacts', 'analytics', 'settings'].map((page, i) => (
-            <button key={i} onClick={() => onNavigate(page)} className="p-4 rounded-xl border border-gray-100 hover:bg-purple-50 hover:border-purple-200 transition-all text-xs font-bold text-gray-600 uppercase">
-              View {page}
+          {[
+            { label: 'New Automation', icon: Bot, page: 'automations', emoji: '🤖' },
+            { label: 'View Contacts', icon: Users, page: 'contacts', emoji: '👥' },
+            { label: 'View Analytics', icon: BarChart3, page: 'analytics', emoji: '📊' },
+            { label: 'Settings', icon: Instagram, page: 'settings', emoji: '⚙️' },
+          ].map((action, i) => (
+            <button
+              key={i}
+              onClick={() => onNavigate(action.page)}
+              className="flex flex-col items-center gap-2 p-5 rounded-2xl border border-gray-100 hover:bg-purple-50 transition-all group"
+            >
+              <div className="text-2xl group-hover:scale-110 transition-transform">{action.emoji}</div>
+              <span className="text-xs font-bold text-gray-600">{action.label}</span>
             </button>
           ))}
         </div>
