@@ -1,109 +1,134 @@
-import { useState, useEffect, useCallback } from 'react';
-import { store, storeEvents } from '../lib/store';
+import React, { useEffect } from 'react';
+import { useStore } from '../hooks/useStore';
+import { Bot, Users, Send, TrendingUp, Instagram, MessageCircle, ExternalLink, Zap, Sparkles } from 'lucide-react';
 
-// Hook to subscribe to store updates
-export function useStore() {
-  const [, forceUpdate] = useState({});
-
-  useEffect(() => {
-    const refresh = () => forceUpdate({});
-    
-    // Subscribe to all store events
-    const unsub = storeEvents.on('*', refresh);
-    
-    return () => {
-      unsub();
-    };
-  }, []);
-
-  return {
-    // Auth
-    isLoggedIn: store.isLoggedIn(),
-    isAdmin: store.isAdmin(),
-    isLoading: store.isLoading(),
-    user: store.getUser(),
-    
-    // Data
-    automations: store.getAutomations(),
-    contacts: store.getContacts(),
-    flows: store.getFlows(),
-    sequences: store.getSequences(),
-    broadcasts: store.getBroadcasts(),
-    growthTools: store.getGrowthTools(),
-    activities: store.getActivities(),
-    
-    // Admin
-    allUsers: store.getAllUsers(),
-    allPayments: store.getAllPayments(),
-    coupons: store.getCoupons(),
-    platformSettings: store.getPlatformSettings(),
-    plans: store.getPlans(),
-    planLimits: store.getPlanLimits(),
-    
-    // Methods
-    loginWithGoogle: useCallback(() => store.loginWithGoogle(), []),
-    demoLogin: useCallback((email: string, name: string) => store.demoLogin(email, name), []),
-    logout: useCallback(() => store.logout(), []),
-    setAdmin: useCallback((isAdmin: boolean) => store.setAdmin(isAdmin), []),
-    
-    // User methods
-    updateUser: useCallback((updates: Parameters<typeof store.updateUser>[0]) => store.updateUser(updates), []),
-    connectInstagram: useCallback((username: string, token: string) => store.connectInstagram(username, token), []),
-    disconnectInstagram: useCallback(() => store.disconnectInstagram(), []),
-    
-    // Automation methods
-    createAutomation: useCallback((automation: Parameters<typeof store.createAutomation>[0]) => store.createAutomation(automation), []),
-    updateAutomation: useCallback((id: string, updates: Parameters<typeof store.updateAutomation>[1]) => store.updateAutomation(id, updates), []),
-    deleteAutomation: useCallback((id: string) => store.deleteAutomation(id), []),
-    toggleAutomation: useCallback((id: string) => store.toggleAutomation(id), []),
-    
-    // Contact methods
-    createContact: useCallback((contact: Parameters<typeof store.createContact>[0]) => store.createContact(contact), []),
-    updateContact: useCallback((id: string, updates: Parameters<typeof store.updateContact>[1]) => store.updateContact(id, updates), []),
-    deleteContact: useCallback((id: string) => store.deleteContact(id), []),
-    
-    // Flow methods
-    createFlow: useCallback((flow: Parameters<typeof store.createFlow>[0]) => store.createFlow(flow), []),
-    updateFlow: useCallback((id: string, updates: Parameters<typeof store.updateFlow>[1]) => store.updateFlow(id, updates), []),
-    deleteFlow: useCallback((id: string) => store.deleteFlow(id), []),
-    
-    // Sequence methods
-    createSequence: useCallback((sequence: Parameters<typeof store.createSequence>[0]) => store.createSequence(sequence), []),
-    updateSequence: useCallback((id: string, updates: Parameters<typeof store.updateSequence>[1]) => store.updateSequence(id, updates), []),
-    deleteSequence: useCallback((id: string) => store.deleteSequence(id), []),
-    
-    // Broadcast methods
-    createBroadcast: useCallback((broadcast: Parameters<typeof store.createBroadcast>[0]) => store.createBroadcast(broadcast), []),
-    updateBroadcast: useCallback((id: string, updates: Parameters<typeof store.updateBroadcast>[1]) => store.updateBroadcast(id, updates), []),
-    deleteBroadcast: useCallback((id: string) => store.deleteBroadcast(id), []),
-    
-    // Growth Tool methods
-    createGrowthTool: useCallback((tool: Parameters<typeof store.createGrowthTool>[0]) => store.createGrowthTool(tool), []),
-    updateGrowthTool: useCallback((id: string, updates: Parameters<typeof store.updateGrowthTool>[1]) => store.updateGrowthTool(id, updates), []),
-    deleteGrowthTool: useCallback((id: string) => store.deleteGrowthTool(id), []),
-    
-    // Payment methods
-    submitPayment: useCallback((plan: string, interval: 'monthly' | 'yearly', amount: number, utr: string) => store.submitPayment(plan, interval, amount, utr), []),
-    approvePayment: useCallback((id: string) => store.approvePayment(id), []),
-    rejectPayment: useCallback((id: string) => store.rejectPayment(id), []),
-    
-    // Coupon methods
-    applyCoupon: useCallback((code: string) => store.applyCoupon(code), []),
-    createCoupon: useCallback((coupon: Parameters<typeof store.createCoupon>[0]) => store.createCoupon(coupon), []),
-    updateCoupon: useCallback((id: string, updates: Parameters<typeof store.updateCoupon>[1]) => store.updateCoupon(id, updates), []),
-    deleteCoupon: useCallback((id: string) => store.deleteCoupon(id), []),
-    
-    // Admin methods
-    loadAdminData: useCallback(() => store.loadAdminData(), []),
-    adminUpdateUser: useCallback((userId: string, updates: Parameters<typeof store.adminUpdateUser>[1]) => store.adminUpdateUser(userId, updates), []),
-    adminDeleteUser: useCallback((userId: string) => store.adminDeleteUser(userId), []),
-    updatePlatformSettings: useCallback((updates: Parameters<typeof store.updatePlatformSettings>[0]) => store.updatePlatformSettings(updates), []),
-    updatePlanPricing: useCallback((planName: string, updates: Parameters<typeof store.updatePlanPricing>[1]) => store.updatePlanPricing(planName, updates), []),
-    
-    // Stats
-    getUserStats: useCallback(() => store.getUserStats(), []),
-    getPaymentStats: useCallback(() => store.getPaymentStats(), [])
-  };
+interface DashboardProps {
+  onNavigate: (page: string) => void;
 }
 
-export default useStore;
+export function Dashboard({ onNavigate }: DashboardProps) {
+  // useStore se zaroori cheezein nikaali
+  const { 
+    user, 
+    automations, 
+    contacts, 
+    flows, 
+    connectInstagram, // Tera existing method
+    updateUser 
+  } = useStore();
+
+  useEffect(() => {
+    // 1. URL se code pakadne ka logic
+    const urlParams = new URLSearchParams(window.location.search);
+    const authCode = urlParams.get('code');
+
+    if (authCode && !user?.instagram_connected) {
+      console.log("✅ Meta Auth Code Mil Gaya!");
+      
+      // 2. Store ko update karna (Fake data ke saath connection simulate kar rahe hain)
+      // Asliyat mein yahan backend call honi chahiye, par kaam chalane ke liye:
+      connectInstagram("Insta_User", "mock_token_" + authCode);
+      
+      // Dashboard ko fresh dikhane ke liye URL saaf kar do
+      window.history.replaceState({}, document.title, "/");
+    }
+  }, [user, connectInstagram]);
+
+  const handleConnectMessenger = () => {
+    const appId = '2436954916718675';
+    const redirectUri = 'https://igone.vercel.app/settings'; 
+    
+    const scope = [
+      'instagram_basic',
+      'instagram_manage_comments',
+      'instagram_manage_messages',
+      'pages_show_list',
+      'pages_read_engagement',
+      'public_profile'
+    ].join(',');
+
+    const authUrl = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${appId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&response_type=code`;
+    
+    window.location.href = authUrl;
+  };
+
+  // --- UI START ---
+
+  // Agar connect nahi hai
+  if (!user?.instagram_connected) {
+    return (
+      <div className="max-w-2xl mx-auto mt-8">
+        <div className="bg-white rounded-3xl shadow-xl p-8 md:p-12 text-center border border-gray-100 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-blue-50 rounded-full blur-3xl"></div>
+          <div className="relative z-10">
+            <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center mx-auto mb-6 shadow-2xl">
+              <MessageCircle size={42} className="text-white" />
+            </div>
+            <h2 className="text-2xl md:text-3xl font-black text-gray-900 mb-3">Almost There! 🚀</h2>
+            <p className="text-gray-500 mb-8">Click below to finalize your Instagram connection.</p>
+            <button
+              onClick={handleConnectMessenger}
+              className="inline-flex items-center gap-3 px-10 py-4 bg-blue-600 text-white rounded-2xl font-bold text-lg shadow-xl hover:bg-blue-700 transition-all"
+            >
+              <Instagram size={24} />
+              Connect with Messenger
+              <ExternalLink size={18} />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Agar connect ho gaya (Real Dashboard)
+  return (
+    <div className="space-y-6 p-4">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-black text-gray-900">🚀 Dashboard Live</h1>
+          <p className="text-sm text-green-600 font-bold">● Connected to Instagram</p>
+        </div>
+        <button 
+          onClick={() => onNavigate('automations')}
+          className="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg"
+        >
+          + New Bot
+        </button>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
+          <Send className="text-blue-500 mb-2" size={20} />
+          <p className="text-2xl font-black">{user?.message_count || 0}</p>
+          <p className="text-[10px] text-gray-400 font-bold uppercase">Messages</p>
+        </div>
+        <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
+          <Bot className="text-purple-500 mb-2" size={20} />
+          <p className="text-2xl font-black">{automations.length}</p>
+          <p className="text-[10px] text-gray-400 font-bold uppercase">Bots</p>
+        </div>
+        <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
+          <Users className="text-green-500 mb-2" size={20} />
+          <p className="text-2xl font-black">{contacts.length}</p>
+          <p className="text-[10px] text-gray-400 font-bold uppercase">Contacts</p>
+        </div>
+        <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
+          <TrendingUp className="text-orange-500 mb-2" size={20} />
+          <p className="text-2xl font-black">{flows.length}</p>
+          <p className="text-[10px] text-gray-400 font-bold uppercase">Flows</p>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-2xl p-6 border border-gray-100 text-center">
+        <h3 className="font-bold text-gray-800 mb-2">Ready to grow?</h3>
+        <p className="text-sm text-gray-500 mb-4">Create your first automated reply for Instagram.</p>
+        <button 
+          onClick={() => onNavigate('automations')}
+          className="px-6 py-2 bg-gray-900 text-white rounded-lg text-sm font-bold"
+        >
+          Setup Auto-Reply
+        </button>
+      </div>
+    </div>
+  );
+}
