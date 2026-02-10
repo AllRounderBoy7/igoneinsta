@@ -1,40 +1,43 @@
 import React, { useEffect } from 'react';
-import { useStore } from '../hooks/useStore';
-import { Bot, Users, Send, TrendingUp, Instagram, MessageCircle, ExternalLink, Zap, Sparkles } from 'lucide-react';
+import { useStore } from '../hooks/useStore'; // Tere folder structure ke hisab se
+import { Bot, Users, Send, TrendingUp, Instagram, MessageCircle, ExternalLink, Sparkles } from 'lucide-react';
 
 interface DashboardProps {
   onNavigate: (page: string) => void;
 }
 
 export function Dashboard({ onNavigate }: DashboardProps) {
-  const { user, automations, contacts, flows, setUser } = useStore(); // setUser ko store se nikalo
+  const { 
+    user, 
+    automations, 
+    contacts, 
+    flows, 
+    connectInstagram 
+  } = useStore();
 
-  // --- YE NAYA LOGIC HAI ---
+  // --- Meta se wapas aane par connection check ---
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const authCode = urlParams.get('code');
 
-    if (authCode) {
-      console.log("✅ Code mil gaya, connecting...");
-      // Temporary connection simulate kar rahe hain taaki dashboard dikhe
-      // Asli setup mein yahan backend call hoti hai
-      if (setUser) {
-        setUser({
-          ...user,
-          instagram_connected: true,
-          name: "IG User", // Yahan user ka naam set ho jayega
-          message_count: 0
-        });
-        // URL se kachra saaf karne ke liye
-        window.history.replaceState({}, document.title, "/");
+    // Agar URL mein 'code' hai aur user abhi tak connected nahi dikh raha
+    if (authCode && (!user || !user.instagram_connected)) {
+      console.log("✅ OAuth Code detected! Syncing with store...");
+      
+      // Store ka method call kar rahe hain jo tune bheja tha
+      // Ye user state ko 'connected: true' kar dega
+      if (connectInstagram) {
+        connectInstagram("Instagram User", "temp_token_" + authCode);
       }
+
+      // URL se kachra (?code=...) hatane ke liye
+      window.history.replaceState({}, document.title, "/");
     }
-  }, []);
-  // -------------------------
+  }, [user, connectInstagram]);
 
   const handleConnectMessenger = () => {
     const appId = '2436954916718675';
-    const redirectUri = 'https://igone.vercel.app/settings'; 
+    const redirectUri = 'https://igone.vercel.app/settings';
     
     const scope = [
       'instagram_basic',
@@ -50,25 +53,30 @@ export function Dashboard({ onNavigate }: DashboardProps) {
     window.location.href = authUrl;
   };
 
-  // 1. Connection check logic
+  // --- UI CONDITIONAL RENDERING ---
+
   if (!user?.instagram_connected) {
     return (
-      <div className="max-w-2xl mx-auto mt-8">
-        <div className="bg-white rounded-3xl shadow-xl p-8 md:p-12 text-center border border-gray-100 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-40 h-40 bg-blue-50 rounded-full blur-3xl"></div>
+      <div className="max-w-2xl mx-auto mt-12">
+        <div className="bg-white rounded-3xl shadow-2xl p-10 text-center border border-gray-100 relative overflow-hidden">
+          <div className="absolute -top-10 -right-10 w-40 h-40 bg-blue-50 rounded-full blur-3xl"></div>
+          
           <div className="relative z-10">
-            <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center mx-auto mb-6 shadow-2xl">
-              <MessageCircle size={42} className="text-white" />
+            <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center mx-auto mb-6 shadow-lg">
+              <MessageCircle size={40} className="text-white" />
             </div>
-            <h2 className="text-2xl md:text-3xl font-black text-gray-900 mb-3">Connect Messenger API 💬</h2>
-            <p className="text-gray-500 mb-8">Click connect to authorize your account.</p>
+            <h2 className="text-3xl font-black text-gray-900 mb-4">Connect Instagram</h2>
+            <p className="text-gray-500 mb-8 max-w-sm mx-auto">
+              Validator green ho gaya hai! Ab bas login karke permissions allow kijiye.
+            </p>
+            
             <button
               onClick={handleConnectMessenger}
-              className="inline-flex items-center gap-3 px-10 py-4 bg-blue-600 text-white rounded-2xl font-bold text-lg shadow-xl hover:bg-blue-700 hover:-translate-y-1 transition-all"
+              className="group relative inline-flex items-center gap-3 px-8 py-4 bg-blue-600 text-white rounded-2xl font-bold text-lg transition-all hover:bg-blue-700 hover:-translate-y-1 active:scale-95 shadow-xl shadow-blue-200"
             >
               <Instagram size={24} />
               Login with Messenger
-              <ExternalLink size={18} />
+              <ExternalLink size={18} className="opacity-50 group-hover:opacity-100" />
             </button>
           </div>
         </div>
@@ -76,47 +84,54 @@ export function Dashboard({ onNavigate }: DashboardProps) {
     );
   }
 
-  // 2. Connected Dashboard (Jo tum dekhna chahte ho)
+  // --- AGAR CONNECTED HAI TOH YE DASHBOARD DIKHEGA ---
   return (
-    <div className="space-y-6 p-4">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-black text-gray-900">🚀 Dashboard Live</h1>
-        <div className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">● CONNECTED</div>
-      </div>
-
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
-          <Send className="text-blue-500 mb-2" />
-          <p className="text-2xl font-black">0</p>
-          <p className="text-xs text-gray-400 font-bold">MESSAGES</p>
+    <div className="space-y-8 animate-in fade-in duration-500">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-black text-gray-900">Dashboard</h1>
+          <div className="flex items-center gap-2 mt-1">
+            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+            <p className="text-sm font-bold text-green-600 uppercase tracking-wider">Instagram Connected</p>
+          </div>
         </div>
-        <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
-          <Bot className="text-purple-500 mb-2" />
-          <p className="text-2xl font-black">{automations.length}</p>
-          <p className="text-xs text-gray-400 font-bold">ACTIVE BOTS</p>
-        </div>
-        <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
-          <Users className="text-green-500 mb-2" />
-          <p className="text-2xl font-black">{contacts.length}</p>
-          <p className="text-xs text-gray-400 font-bold">CONTACTS</p>
-        </div>
-        <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
-          <TrendingUp className="text-orange-500 mb-2" />
-          <p className="text-2xl font-black">{flows.length}</p>
-          <p className="text-xs text-gray-400 font-bold">FLOWS</p>
-        </div>
-      </div>
-
-      <div className="bg-white rounded-2xl p-6 border border-gray-100">
-        <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
-          <Sparkles size={18} className="text-blue-600" /> Start Automating
-        </h3>
         <button 
           onClick={() => onNavigate('automations')}
-          className="w-full py-4 bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl text-gray-500 font-bold hover:bg-blue-50 hover:border-blue-200 transition-all"
+          className="bg-gray-900 text-white px-6 py-3 rounded-xl font-bold hover:bg-black transition-all shadow-lg"
         >
-          + Create your first DM Auto-Reply
+          + Create New Automation
         </button>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[
+          { label: 'Total DMs', val: user?.message_count || 0, icon: Send, color: 'text-blue-500', bg: 'bg-blue-50' },
+          { label: 'Active Bots', val: automations.length, icon: Bot, color: 'text-purple-500', bg: 'bg-purple-50' },
+          { label: 'Contacts', val: contacts.length, icon: Users, color: 'text-green-500', bg: 'bg-green-50' },
+          { label: 'Flows', val: flows.length, icon: TrendingUp, color: 'text-orange-500', bg: 'bg-orange-50' },
+        ].map((item, i) => (
+          <div key={i} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+            <div className={`w-12 h-12 ${item.bg} ${item.color} rounded-xl flex items-center justify-center mb-4`}>
+              <item.icon size={24} />
+            </div>
+            <p className="text-3xl font-black text-gray-900">{item.val}</p>
+            <p className="text-sm font-bold text-gray-400 uppercase tracking-tighter mt-1">{item.label}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl p-8 text-white relative overflow-hidden shadow-xl">
+        <Sparkles className="absolute top-4 right-4 opacity-20" size={100} />
+        <div className="relative z-10">
+          <h3 className="text-xl font-bold mb-2">Automate your first reply ⚡</h3>
+          <p className="opacity-90 mb-6 max-w-md">Comment "DEAL" on my post and I'll DM you the link - setup this in 2 minutes.</p>
+          <button 
+            onClick={() => onNavigate('automations')}
+            className="bg-white text-blue-600 px-6 py-3 rounded-xl font-bold hover:bg-blue-50 transition-colors"
+          >
+            Get Started
+          </button>
+        </div>
       </div>
     </div>
   );
