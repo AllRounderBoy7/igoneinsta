@@ -1,18 +1,696 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>IGOne - #1 Instagram Automation Platform | DM Auto-Reply, Comment Automation</title>
-    <meta name="description" content="IGOne - Automate your Instagram DMs, comments, stories. Build flows, broadcast messages, grow your audience on autopilot. Better than ManyChat." />
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
-   <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IGONE - Hacked by SAMEER</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000;
+            overflow: hidden;
+            color: #fff;
+        }
+
+        /* Animated Background with Grid */
+        .cyber-bg {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, #000000 0%, #0a0a1f 50%, #000000 100%);
+            z-index: 1;
+        }
+
+        /* Animated Grid Lines */
+        .grid-container {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            perspective: 1000px;
+            z-index: 2;
+        }
+
+        .grid {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            transform: rotateX(60deg) translateY(-50%);
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: rotateX(60deg) translateY(-50%) translateZ(0); }
+            100% { transform: rotateX(60deg) translateY(-50%) translateZ(500px); }
+        }
+
+        /* Floating Particles */
+        .particles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: 3;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #00ffff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+            animation: float linear infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% {
+                transform: translateY(-100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        /* Glitch Scan Lines */
+        .scanlines {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                transparent 50%,
+                rgba(0, 255, 255, 0.03) 50%
+            );
+            background-size: 100% 4px;
+            z-index: 10;
+            pointer-events: none;
+            animation: scanline 8s linear infinite;
+        }
+
+        @keyframes scanline {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(100%); }
+        }
+
+        /* Main Container */
+        .container {
+            position: relative;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        /* Logo/Icon Area */
+        .cyber-icon {
+            width: 150px;
+            height: 150px;
+            margin-bottom: 40px;
+            position: relative;
+            animation: iconPulse 3s ease-in-out infinite;
+        }
+
+        .cyber-icon::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 3px solid #00ffff;
+            border-radius: 50%;
+            animation: ringPulse 2s ease-out infinite;
+        }
+
+        .cyber-icon::after {
+            content: '';
+            position: absolute;
+            width: 80%;
+            height: 80%;
+            top: 10%;
+            left: 10%;
+            border: 2px solid #ff00ff;
+            border-radius: 50%;
+            animation: ringPulse 2s ease-out infinite 0.5s;
+        }
+
+        .cyber-icon .inner-icon {
+            position: absolute;
+            width: 60%;
+            height: 60%;
+            top: 20%;
+            left: 20%;
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+            animation: rotate 4s linear infinite;
+            filter: drop-shadow(0 0 20px #00ffff);
+        }
+
+        @keyframes iconPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes ringPulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Main Title with Dangerous Glitch Effect */
+        .title {
+            font-size: 6rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 15px;
+            margin-bottom: 20px;
+            position: relative;
+            animation: dangerGlitch 1s infinite;
+        }
+
+        .title span {
+            background: linear-gradient(90deg, #ff0000, #00ff00, #00ffff, #ff0000);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: dangerGradient 2s ease infinite;
+            filter: drop-shadow(0 0 10px #ff0000) 
+                    drop-shadow(0 0 20px #00ff00) 
+                    drop-shadow(0 0 30px #00ffff);
+        }
+
+        @keyframes dangerGlitch {
+            0%, 85%, 100% {
+                transform: translate(0);
+                filter: none;
+            }
+            86% {
+                transform: translate(-5px, 5px);
+                filter: hue-rotate(90deg);
+            }
+            88% {
+                transform: translate(5px, -5px);
+                filter: hue-rotate(180deg);
+            }
+            90% {
+                transform: translate(-3px, -3px);
+                filter: hue-rotate(270deg);
+            }
+            92% {
+                transform: translate(3px, 3px);
+                filter: hue-rotate(360deg);
+            }
+        }
+
+        @keyframes dangerGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Subtitle - Hacking Theme */
+        .subtitle {
+            font-size: 1.8rem;
+            color: #00ff00;
+            margin-bottom: 50px;
+            letter-spacing: 8px;
+            animation: hackBlink 1.5s ease-in-out infinite;
+            text-shadow: 0 0 20px #00ff00, 0 0 40px #00ff00;
+            font-weight: bold;
+        }
+
+        @keyframes hackBlink {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+
+        /* Hacking Terminal Effect */
+        .terminal {
+            width: 700px;
+            margin-bottom: 50px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ff00;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 
+                0 0 20px rgba(0, 255, 0, 0.3),
+                inset 0 0 20px rgba(0, 255, 0, 0.1);
+            font-family: 'Courier New', monospace;
+        }
+
+        .terminal-header {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .terminal-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-btn.red { background: #ff5f56; }
+        .terminal-btn.yellow { background: #ffbd2e; }
+        .terminal-btn.green { background: #27c93f; }
+
+        .terminal-content {
+            color: #00ff00;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .terminal-line {
+            animation: typing 3s steps(40) infinite;
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 2px solid #00ff00;
+        }
+
+        @keyframes typing {
+            0%, 100% { width: 0; }
+            50% { width: 100%; }
+        }
+
+        .access-granted {
+            color: #00ff00;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-shadow: 0 0 20px #00ff00;
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 600px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #00ffff, #ff00ff);
+            width: 0%;
+            animation: loadProgress 10s ease-in-out infinite;
+            box-shadow: 0 0 20px #00ffff;
+        }
+
+        @keyframes loadProgress {
+            0% { width: 0%; }
+            50% { width: 100%; }
+            100% { width: 0%; }
+        }
+
+        /* Status Text */
+        .status {
+            font-size: 1rem;
+            color: #888;
+            letter-spacing: 2px;
+            margin-bottom: 40px;
+            animation: blink 1.5s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Instagram Link - Hacker Style */
+        .instagram-section {
+            margin-top: 40px;
+        }
+
+        .instagram-label {
+            color: #00ff00;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        .instagram-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 40px;
+            background: rgba(0, 255, 0, 0.05);
+            border: 2px solid #00ff00;
+            border-radius: 50px;
+            color: #00ff00;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+
+        .instagram-link::before {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 100%;
+            background: #00ff00;
+            transition: all 0.4s ease;
+            left: 0;
+            top: 0;
+            z-index: -1;
+        }
+
+        .instagram-link:hover {
+            color: #000;
+            border-color: #00ffff;
+            box-shadow: 
+                0 0 30px #00ff00,
+                0 0 50px #00ff00,
+                0 0 70px #00ff00;
+            transform: scale(1.05);
+        }
+
+        .instagram-link:hover::before {
+            width: 100%;
+        }
+
+        .instagram-icon {
+            font-size: 2rem;
+            animation: rotate 3s linear infinite;
+        }
+
+        /* Corner Decorations */
+        .corner {
+            position: fixed;
+            width: 100px;
+            height: 100px;
+            border: 2px solid #00ffff;
+            z-index: 4;
+        }
+
+        .corner.top-left {
+            top: 20px;
+            left: 20px;
+            border-right: none;
+            border-bottom: none;
+            animation: cornerPulse 2s ease-in-out infinite;
+        }
+
+        .corner.top-right {
+            top: 20px;
+            right: 20px;
+            border-left: none;
+            border-bottom: none;
+            animation: cornerPulse 2s ease-in-out infinite 0.5s;
+        }
+
+        .corner.bottom-left {
+            bottom: 20px;
+            left: 20px;
+            border-right: none;
+            border-top: none;
+            animation: cornerPulse 2s ease-in-out infinite 1s;
+        }
+
+        .corner.bottom-right {
+            bottom: 20px;
+            right: 20px;
+            border-left: none;
+            border-top: none;
+            animation: cornerPulse 2s ease-in-out infinite 1.5s;
+        }
+
+        @keyframes cornerPulse {
+            0%, 100% { 
+                opacity: 0.5;
+                box-shadow: 0 0 10px #00ffff;
+            }
+            50% { 
+                opacity: 1;
+                box-shadow: 0 0 30px #00ffff;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .title { font-size: 3rem; letter-spacing: 5px; }
+            .subtitle { font-size: 1.2rem; letter-spacing: 3px; }
+            .terminal { width: 90%; padding: 15px; font-size: 0.75rem; }
+            .progress-container { width: 90%; }
+            .corner { width: 50px; height: 50px; }
+            .instagram-link { 
+                font-size: 1.1rem; 
+                padding: 12px 25px;
+                gap: 10px;
+            }
+            .instagram-icon { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background -->
+    <div class="cyber-bg"></div>
+    
+    <!-- Animated Grid -->
+    <div class="grid-container">
+        <div class="grid"></div>
+    </div>
+
+    <!-- Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Scanlines -->
+    <div class="scanlines"></div>
+
+    <!-- Corner Decorations -->
+    <div class="corner top-left"></div>
+    <div class="corner top-right"></div>
+    <div class="corner bottom-left"></div>
+    <div class="corner bottom-right"></div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Cyber Icon -->
+        <div class="cyber-icon">
+            <div class="inner-icon"></div>
+        </div>
+
+        <!-- Title -->
+        <h1 class="title"><span>IGONE</span></h1>
+        
+        <!-- Subtitle -->
+        <p class="subtitle">[ SYSTEM BREACH DETECTED ]</p>
+
+        <!-- Creator Tag -->
+        <div style="margin-bottom: 30px;">
+            <span style="color: #ff0000; font-size: 1.2rem; letter-spacing: 3px; text-shadow: 0 0 20px #ff0000;">
+                ⚠️ HACKED BY 
+            </span>
+            <span style="color: #00ff00; font-size: 1.5rem; font-weight: bold; letter-spacing: 5px; text-shadow: 0 0 20px #00ff00, 0 0 40px #00ff00; margin-left: 10px;">
+                SAMEER
+            </span>
+            <span style="color: #ff0000; font-size: 1.2rem; letter-spacing: 3px; text-shadow: 0 0 20px #ff0000; margin-left: 10px;">
+                ⚠️
+            </span>
+        </div>
+
+        <!-- Coming Soon Tag -->
+        <div style="color: #00ffff; font-size: 1.3rem; margin-bottom: 40px; letter-spacing: 8px; animation: hackBlink 1.5s ease-in-out infinite; text-shadow: 0 0 15px #00ffff;">
+            「 COMING SOON 」
+        </div>
+
+        <!-- Hacking Terminal -->
+        <div class="terminal">
+            <div class="terminal-header">
+                <div class="terminal-btn red"></div>
+                <div class="terminal-btn yellow"></div>
+                <div class="terminal-btn green"></div>
+            </div>
+            <div class="terminal-content">
+                <div class="terminal-line">root@sameer:~$ initializing_attack_sequence...</div>
+                <div>root@sameer:~$ scanning_target_servers...</div>
+                <div>root@sameer:~$ bypassing_firewall...</div>
+                <div>root@sameer:~$ injecting_payload...</div>
+                <div>root@sameer:~$ extracting_encrypted_data...</div>
+                <div>root@sameer:~$ establishing_backdoor...</div>
+                <div class="access-granted">>> IGONE SYSTEM COMPROMISED <<</div>
+                <div style="color: #ff0000; margin-top: 10px;">[!] ACCESS GRANTED BY SAMEER</div>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-bar"></div>
+        </div>
+
+        <!-- Status -->
+        <p class="status">&gt;&gt; DEPLOYING MALICIOUS CODE...</p>
+
+        <!-- Instagram Section -->
+        <div class="instagram-section">
+            <div class="instagram-label">[ FOLLOW THE HACKER ]</div>
+            <a href="https://instagram.com/itz_sameer_an1" target="_blank" class="instagram-link">
+                <span class="instagram-icon">📷</span>
+                <span>@itz_sameer_an1</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Create Floating Particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 80;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 10 + 5) + 's';
+                particle.style.animationDelay = Math.random() * 5 + 's';
+                
+                // Random colors for particles
+                const colors = ['#00ff00', '#ff0000', '#00ffff', '#ff00ff'];
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.boxShadow = `0 0 10px ${particle.style.background}, 0 0 20px ${particle.style.background}`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        createParticles();
+
+        // Extreme Glitch Effect on Title
+        function extremeGlitch() {
+            const title = document.querySelector('.title span');
+            const originalText = 'IGONE';
+            const glitchChars = '▓▒░█▄▀▐│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌!@#$%^&*()_+-=[]{}|;:,.<>?/~`01ABXYZ';
+            
+            let glitchedText = '';
+            for (let i = 0; i < originalText.length; i++) {
+                if (Math.random() > 0.85) {
+                    glitchedText += glitchChars[Math.floor(Math.random() * glitchChars.length)];
+                } else {
+                    glitchedText += originalText[i];
+                }
+            }
+            
+            title.textContent = glitchedText;
+            
+            setTimeout(() => {
+                title.textContent = originalText;
+            }, 100);
+        }
+
+        setInterval(() => {
+            if (Math.random() > 0.92) {
+                extremeGlitch();
+            }
+        }, 150);
+
+        // Dangerous Hacking Status Messages
+        const hackMessages = [
+            '>> DEPLOYING MALICIOUS CODE...',
+            '>> BRUTE FORCING ENCRYPTION...',
+            '>> INTERCEPTING DATA PACKETS...',
+            '>> EXPLOITING ZERO-DAY VULNERABILITY...',
+            '>> INJECTING BACKDOOR TROJAN...',
+            '>> CRACKING SHA-256 HASH...',
+            '>> BYPASSING 2FA AUTHENTICATION...',
+            '>> EXECUTING BUFFER OVERFLOW...',
+            '>> ESTABLISHING REVERSE SHELL...',
+            '>> ESCALATING ROOT PRIVILEGES...',
+            '>> DUMPING MEMORY CONTENTS...',
+            '>> HIJACKING DNS REQUESTS...',
+            '>> PERFORMING SQL INJECTION...',
+            '>> ACTIVATING BOTNET ARMY...',
+            '>> WIPING SYSTEM LOGS...'
+        ];
+
+        let messageIndex = 0;
+        setInterval(() => {
+            messageIndex = (messageIndex + 1) % hackMessages.length;
+            document.querySelector('.status').textContent = hackMessages[messageIndex];
+        }, 2500);
+
+        // Random Screen Flicker Effect
+        function screenFlicker() {
+            document.body.style.opacity = '0.3';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 50);
+        }
+
+        setInterval(() => {
+            if (Math.random() > 0.97) {
+                screenFlicker();
+            }
+        }, 1000);
+
+        // Terminal Typing Animation
+        let terminalLines = document.querySelectorAll('.terminal-content div');
+        let currentLine = 0;
+
+        function typeTerminalLines() {
+            if (currentLine < terminalLines.length - 3) {
+                terminalLines[currentLine].style.display = 'none';
+                setTimeout(() => {
+                    terminalLines[currentLine].style.display = 'block';
+                    currentLine++;
+                    if (currentLine < terminalLines.length - 3) {
+                        setTimeout(typeTerminalLines, 800);
+                    }
+                }, 100);
+            }
+        }
+
+        // Hide all lines initially except first
+        for (let i = 1; i < terminalLines.length; i++) {
+            terminalLines[i].style.display = 'none';
+        }
+
+        // Start typing effect
+        setTimeout(typeTerminalLines, 1000);
+
+        // Reset typing animation every 15 seconds
+        setInterval(() => {
+            currentLine = 0;
+            for (let i = 1; i < terminalLines.length; i++) {
+                terminalLines[i].style.display = 'none';
+            }
+            typeTerminalLines();
+        }, 15000);
+    </script>
+</body>
 </html>
