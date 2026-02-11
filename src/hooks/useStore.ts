@@ -1,35 +1,42 @@
-import { useState, useEffect, useCallback } from 'react';
-import { store } from '../lib/store'; // Check kar ye path sahi hai na?
+import { create } from 'zustand'; // Agar zustand use kar rahe ho, warna plain object logic
 
-export function useStore() {
-  const [, setTick] = useState(0);
-  
-  useEffect(() => {
-    // Store subscribe logic
-    if (store && (store as any).subscribe) {
-      const unsub = (store as any).subscribe(() => setTick(t => t + 1));
-      return () => { if (unsub) unsub(); };
-    }
-  }, []);
-  
-  const forceUpdate = useCallback(() => setTick(t => t + 1), []);
-  
-  return { 
-    // Data
-    user: (store as any).getUser?.() || null,
-    automations: (store as any).getAutomations?.() || [],
-    contacts: (store as any).getContacts?.() || [],
-    flows: (store as any).getFlows?.() || [],
-    
-    // Auth & Actions
-    isLoggedIn: (store as any).isLoggedIn?.() || false,
-    connectInstagram: (username: string, token: string) => (store as any).connectInstagram?.(username, token),
-    updateUser: (updates: any) => (store as any).updateUser?.(updates),
-    
-    // Core helpers
-    store, 
-    forceUpdate 
-  };
-}
+export const store = {
+  state: {
+    user: {
+      name: "User",
+      instagram_connected: false,
+      message_count: 0,
+      username: ""
+    },
+    automations: [],
+    contacts: [], // Yahan se Sarah/Mike gayab
+    flows: [],
+  },
 
-export default useStore;
+  // Methods
+  getUser: () => store.state.user,
+  getAutomations: () => store.state.automations,
+  getContacts: () => store.state.contacts,
+  getFlows: () => store.state.flows,
+
+  connectInstagram: (username: string, token: string) => {
+    store.state.user = {
+      ...store.state.user,
+      instagram_connected: true,
+      username: username
+    };
+    store.notify();
+  },
+
+  // Store update logic
+  subscribers: [] as Function[],
+  subscribe: (fn: Function) => {
+    store.subscribers.push(fn);
+    return () => {
+      store.subscribers = store.subscribers.filter(s => s !== fn);
+    };
+  },
+  notify: () => {
+    store.subscribers.forEach(fn => fn());
+  }
+};
